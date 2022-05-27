@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dotnet-dump-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dotnet-dump
+  template:
+    metadata:
+      labels:
+        app: dotnet-dump
+    spec:
+      shareProcessNamespace: true # required for dotnet tools sidecar
+      securityContext:
+        runAsNonRoot: true
+      restartPolicy: Always
+      containers:
+      - name: app
+        image: "aisdzcr.azurecr.io/dotnet-dump-aspnet"
+        imagePullPolicy: Always
+        securityContext:
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+        ports:
+        - name: http
+          containerPort: 5000
+        env:
+        - name: COMPlus_EnableDiagnostics
+          value: "0"
+        resources:
+          requests:
+            cpu: 50m
+            memory: 32Mi
+          limits:
+            cpu: 250m
+            memory: 512Mi
+        volumeMounts:
+        - name: temp-vol
+          mountPath: /tmp
+      - name: tools
+        image: aisdzcr.azurecr.io/dotnet-tools
+        imagePullPolicy: Always
+        command: ["sleep"]
+        args: ["infinity"]
+        securityContext:
+          #readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+        resources:
+          requests:
+            cpu: 50m
+            memory: 32Mi
+            ephemeral-storage: "200Mi"
+          limits:
+            cpu: 250m
+            memory: 256Mi
+            ephemeral-storage: "512Mi"
+        volumeMounts:
+        - name: temp-vol
+          mountPath: /tmp
+      volumes:
+      - name: temp-vol
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dotnet-dump-deploy-svc
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+  selector:
+    app: exampleapp

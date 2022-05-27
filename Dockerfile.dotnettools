@@ -1,0 +1,10 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build
+
+RUN dotnet tool install --tool-path /tools dotnet-counters
+RUN dotnet tool install --tool-path /tools dotnet-dump
+RUN dotnet tool install --tool-path /tools dotnet-gcdump
+RUN dotnet tool install --tool-path /tools dotnet-trace
+RUN dotnet tool install --tool-path /tools dotnet-stack
+
+RUN adduser -u 1000 --disabled-password --gecos "" appuser
+USER 1000

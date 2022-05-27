@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dotnet-diag-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dotnet-diag
+  template:
+    metadata:
+      labels:
+        app: dotnet-diag
+    spec:
+      securityContext:
+        runAsNonRoot: true
+      restartPolicy: Always
+      containers:
+      - name: app
+        image: "aisdzcr.azurecr.io/dotnet-diag"
+        imagePullPolicy: Always
+        securityContext:
+          readOnlyRootFilesystem: false
+          allowPrivilegeEscalation: false
+        ports:
+        - name: http
+          containerPort: 5178
+        env:
+        - name: COMPlus_EnableDiagnostics
+          value: "1"
+        resources:
+          requests:
+            cpu: 50m
+            memory: 32Mi
+          limits:
+            cpu: 250m
+            memory: 512Mi
+        volumeMounts:
+        - name: temp-vol
+          mountPath: /tmp
+      volumes:
+      - name: temp-vol
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dotnet-diag-deploy-svc
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+  selector:
+    app: dotnet-diag
