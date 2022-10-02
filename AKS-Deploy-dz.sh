@@ -41,7 +41,7 @@ helm upgrade dotnet-diag ./helm/dotnet-diag-cht --set enableDiagnostics=true
 kubectl get pods,svc
 
 # Get a dotnet dump
-pod=dotnet-diag-dotnet-diag-cht-b554f45b8-trh9f
+pod=dotnet-diag-dotnet-diag-cht-855dbbfb54-78cfg
 
 kubectl exec -it -c diag $pod -- bash
 
