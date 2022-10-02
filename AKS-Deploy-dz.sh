@@ -1,63 +1,57 @@
-# Commands for setting up required resources in Azure and AKS
+# Commands for running the demo in AKS.
 # Update the variables for your environment.
-
 
 resourceGroup="ais-dz-aks"
 location="EastUS"
 aksName="ais-dz-aks"
 acrName="aisdzcr"
-imageName="dotnet-diag"
+imageName="dotnet-diag-demo"
+toolsImageName="dotnet-tools"
 
 az login
 
-# Resource Group
+# Createe the resource group
 az group create --name $resourceGroup --location $location
 
-# ACR
+# Create and login to the ACR
 az acr create --resource-group $resourceGroup --name $acrName --sku Basic
 az acr login --name $acrName
 
-# Docker build
+# Build and push the application image
 docker build --rm --pull -f Dockerfile -t $imageName .
-#docker run -it --rm -v "C:\tmp:/scratch" $imageName
-docker run -it --rm -P $imageName
-
-# Tag and push the image to the ACR
 docker tag $imageName "$acrName.azurecr.io/$imageName"
 docker push "$acrName.azurecr.io/$imageName"
 
-# dotnet tools image
-toolsImageName=dotnet-tools
+# Build and push dotnet tools image
 docker build --rm --pull -f Dockerfile.dotnettools -t "$toolsImageName" .
 docker tag $toolsImageName "$acrName.azurecr.io/$toolsImageName"
 docker push "$acrName.azurecr.io/$toolsImageName"
 
-# dotnet-monitor image
-monitorImageName=dotnet-dotnet-monitor
-docker build --rm --pull -f Dockerfile.dotnetmonitor -t "$monitorImageName" .
-docker tag $monitorImageName "$acrName.azurecr.io/$monitorImageName"
-docker push "$acrName.azurecr.io/$monitorImageName"
-
-# AKS
+# Create AKS cluster and get credentials
 az aks create --resource-group "$resourceGroup" --name "$aksName" --node-count 2 --generate-ssh-keys --attach-acr "$acrName"
 az aks get-credentials --resource-group "$resourceGroup" --name "$aksName"
 
-# Create the deployment
+# Upgrade or install the Helm chart
+helm upgrade dotnet-diag ./helm/dotnet-diag-cht --install
 
-kubectl apply -f dotnet-monitor-deploy.yaml
-kubectl delete deploy dotnet-monitor-deploy
+# Upgrade the deployment with diagnostics enabled
+helm upgrade dotnet-diag ./helm/dotnet-diag-cht --set enableDiagnostics=true
 
-kubectl apply -f dotnet-tools-deploy.yaml
-kubectl delete deploy dotnet-diag-deploy
-
+# Check the deployment
 kubectl get pods,svc
-kubectl get services
 
-# delete the cluster when done
+# Get a dotnet dump
+pod=dotnet-diag-dotnet-diag-cht-b554f45b8-trh9f
+
+kubectl exec -it -c diag $pod -- bash
+
+# Uninstall the Helm chart
+helm uninstall dotnet-diag
+
+
+# Stop or delete the cluster when done
 az aks delete --name "$aksName" --resource-group "$resourceGroup" --yes --no-wait
 az aks stop --name "$aksName" --resource-group "$resourceGroup"
+
+# Restart the cluster
 az aks start --name "$aksName" --resource-group "$resourceGroup"
-
-
-kubectl config get-contexts
-kubectl config use-context docker-desktop

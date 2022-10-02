@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dotnet-diag-cht.fullname" . }}
+  labels:
+    {{- include "dotnet-diag-cht.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "dotnet-diag-cht.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "dotnet-diag-cht.selectorLabels" . | nindent 8 }}
+    spec:
+      # If we're enabling diagnostics, Use a shared process namespace so we can use the tools from the sidecar image.
+      securityContext:
+        runAsNonRoot: true
+      {{- if .Values.enableDiagnostics}}
+      shareProcessNamespace: true
+      {{- else }}
+      shareProcessNamespace: false
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        securityContext:
+          # Currently enabling .NET diagnostics requires a writable root filesystem
+          {{- if .Values.enableDiagnostics}}
+          readOnlyRootFilesystem: false
+          {{- else }}
+          readOnlyRootFilesystem: true
+          {{- end }}
+          allowPrivilegeEscalation: false
+        env:
+        # Enable or disable .NET diagnostics in the app via environment variable
+        {{- if .Values.enableDiagnostics}}
+        - name: DOTNET_EnableDiagnostics
+          value: "1"
+        {{- else }}
+        - name: DOTNET_EnableDiagnostics
+          value: "0"
+        {{- end }}
+        ports:
+          - name: http
+            containerPort: {{ .Values.pod.httpPort }}
+            protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+      {{- if .Values.enableDiagnostics}}
+      - name: diag
+        image: "{{ .Values.image.registry }}/{{ .Values.image.toolsRepository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: Always
+        command: ["sleep"]
+        args: ["infinity"]
+        securityContext:
+          #readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+        resources:
+          {{- toYaml .Values.toolsResources | nindent 12 }}
+        volumeMounts:
+        - name: temp-vol
+          mountPath: /tmp
+      {{- end }}
+      volumes:
+      - name: temp-vol
+        emptyDir: {}

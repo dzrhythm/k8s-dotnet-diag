@@ -1,0 +1,41 @@
+# Default values for dotnet-diag-cht.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+# Update with your registry and image repositories
+image:
+  registry: aisdzcr.azurecr.io
+  repository: dotnet-diag-demo
+  toolsRepository: dotnet-tools
+  pullPolicy: Always
+  tag: "latest"
+
+enableDiagnostics: false
+
+pod:
+  httpPort: 5000
+
+service:
+  type: LoadBalancer
+  port: 80
+
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 128Mi
+
+toolsResources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+    ephemeral-storage: 1024Mi
+  requests:
+    cpu: 200m
+    memory: 128Mi
+    ephemeral-storage: 512Mi

@@ -1,3 +1,5 @@
+# Builds an image with dotnet tools installed
+#
 FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build
 
 RUN dotnet tool install --tool-path /tools dotnet-counters
