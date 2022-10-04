@@ -1,5 +1,6 @@
-# Commands for running the demo in AKS.
-# Update the variables for your environment.
+# Commands for setting up required resources in Azure running the demo.
+# Update the variables for your environment, and consider
+# running one command at a time to follow along.
 
 resourceGroup="ais-dz-aks"
 location="EastUS"
@@ -40,10 +41,9 @@ helm upgrade dotnet-diag ./helm/dotnet-diag-cht --set enableDiagnostics=true
 # Check the deployment
 kubectl get pods,svc
 
-# Get a dotnet dump
-pod=dotnet-diag-dotnet-diag-cht-855dbbfb54-78cfg
-
-kubectl exec -it -c diag $pod -- bash
+#
+# Use the get-dotnet-dump.sh script to get a process dump.
+#
 
 # Uninstall the Helm chart
 helm uninstall dotnet-diag

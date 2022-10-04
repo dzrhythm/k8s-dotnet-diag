@@ -1,7 +1,6 @@
-# Commands for setting up required resources in Azure and AKS
-# Update the variables for your environment.
-# To run lines individually in a PowerShell integrated termainal
-# in VS Code, place the cursor on the line and press F8.
+# Commands for setting up required resources in Azure running the demo.
+# Update the variables for your environment, and consider
+# running one command at a time to follow along.
 
 resourceGroup=""
 location="EastUS"
