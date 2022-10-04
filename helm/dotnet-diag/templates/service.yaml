@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "dotnet-diag-cht.fullname" . }}
+  name: {{ include "dotnet-diag.fullname" . }}
   labels:
-    {{- include "dotnet-diag-cht.labels" . | nindent 4 }}
+    {{- include "dotnet-diag.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "dotnet-diag-cht.selectorLabels" . | nindent 4 }}
+    {{- include "dotnet-diag.selectorLabels" . | nindent 4 }}

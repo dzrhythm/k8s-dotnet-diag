@@ -33,10 +33,10 @@ az aks create --resource-group "$resourceGroup" --name "$aksName" --node-count 2
 az aks get-credentials --resource-group "$resourceGroup" --name "$aksName"
 
 # Upgrade or install the Helm chart
-helm upgrade dotnet-diag ./helm/dotnet-diag-cht --install
+helm upgrade dotnet-diag ./helm/dotnet-diag --install
 
 # Upgrade the deployment with diagnostics enabled
-helm upgrade dotnet-diag ./helm/dotnet-diag-cht --set enableDiagnostics=true
+helm upgrade dotnet-diag ./helm/dotnet-diag --set enableDiagnostics=true
 
 # Check the deployment
 kubectl get pods,svc

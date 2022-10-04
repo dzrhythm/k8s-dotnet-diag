@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "dotnet-diag-cht.fullname" . }}
+  name: {{ include "dotnet-diag.fullname" . }}
   labels:
-    {{- include "dotnet-diag-cht.labels" . | nindent 4 }}
+    {{- include "dotnet-diag.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "dotnet-diag-cht.selectorLabels" . | nindent 6 }}
+      {{- include "dotnet-diag.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -16,7 +16,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "dotnet-diag-cht.selectorLabels" . | nindent 8 }}
+        {{- include "dotnet-diag.selectorLabels" . | nindent 8 }}
     spec:
       # If we're enabling diagnostics, Use a shared process namespace so we can use the tools from the sidecar image.
       securityContext:
