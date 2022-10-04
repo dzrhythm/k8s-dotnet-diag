@@ -41,10 +41,10 @@ spec:
         env:
         # Enable or disable .NET diagnostics in the app via environment variable
         {{- if .Values.enableDiagnostics}}
-        - name: COMPlus_EnableDiagnostics
+        - name: DOTNET_EnableDiagnostics
           value: "1"
         {{- else }}
-        - name: COMPlus_EnableDiagnostics
+        - name: DOTNET_EnableDiagnostics
           value: "0"
         {{- end }}
         ports:
@@ -65,7 +65,8 @@ spec:
         # This also gives us a writable /tmp mount for scratch space.
         volumeMounts:
         - name: temp-vol
-          mountPath: /tmp      {{- if .Values.enableDiagnostics}}
+          mountPath: /tmp
+      {{- if .Values.enableDiagnostics}}
       - name: diag
         image: "{{ .Values.image.registry }}/{{ .Values.image.toolsRepository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: Always
