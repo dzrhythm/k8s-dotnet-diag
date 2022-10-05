@@ -12,7 +12,9 @@ debugContainerName='diag'
 
 # Get the process ID for dotnet using `dotnet-dump ps`
 # Sample expected output:
-#          6 dotnet     /usr/share/dotnet/dotnet
+#
+# 6 dotnet     /usr/share/dotnet/dotnet
+#
 psOutput=$(kubectl exec $pod -c $debugContainerName -- /tools/dotnet-dump ps)
 processId=$(echo $psOutput | sed 's/\s*\([0-9]*\).*/\1/')
 echo $processId
