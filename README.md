@@ -1,10 +1,11 @@
 # k8s-dotnet-diag
 
-Demonstrates using .NET diagnostic tools from a conditionally enabled
-sidecar container in pods deployed to [Kubernetes](https://kubernetes.io/).
+Demonstrates using [.NET diagnostic tools](https://learn.microsoft.com/dotnet/core/diagnostics/)
+such as [dotnet-dump](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-dump)
+from a conditionally enabled sidecar container in pods deployed to [Kubernetes](https://kubernetes.io/).
 This approach allows us to:
 
-- Run our application more securely under normal circumstances
+- Run application more securely under normal circumstances
  (read-only root file system, no additional tools insalled that increase attack surface), and
 - Enable diagnostics and tools on demand when needed.
 

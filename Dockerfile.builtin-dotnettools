@@ -1,5 +1,6 @@
 # A sample Dockerfile where we're including some of the dotnet tools in
-# the application image itself.
+# the application image itself. This may be more convenient than a sidecar
+# in cases where the increased attack surface and risk is acceptable.
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim AS base
 WORKDIR /app
