@@ -4,7 +4,7 @@ replicaCount: 1
 
 # Update with your registry and image repositories
 image:
-  registry: your-acr-name.azurecr.io
+  registry: [YOUR_ACR_NAME].azurecr.io
   repository: dotnet-diag-demo
   toolsRepository: dotnet-tools
   pullPolicy: Always
