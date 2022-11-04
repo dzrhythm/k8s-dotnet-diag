@@ -46,7 +46,7 @@
             "dockerBuild": {
                 "tag": "k8sdotnetdiag:dev",
                 "target": "base",
-                "dockerfile": "${workspaceFolder}/aspnetapp/Dockerfile",
+                "dockerfile": "${workspaceFolder}/Dockerfile",
                 "context": "${workspaceFolder}",
                 "pull": true
             },
@@ -62,7 +62,7 @@
             ],
             "dockerBuild": {
                 "tag": "k8sdotnetdiag:latest",
-                "dockerfile": "${workspaceFolder}/aspnetapp/Dockerfile",
+                "dockerfile": "${workspaceFolder}/Dockerfile",
                 "context": "${workspaceFolder}",
                 "pull": true
             },
