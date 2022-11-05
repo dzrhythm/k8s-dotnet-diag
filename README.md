@@ -1,12 +1,12 @@
 # k8s-dotnet-diag
 
-Demonstrates using [.NET diagnostic tools](https://learn.microsoft.com/dotnet/core/diagnostics/)
-such as [dotnet-dump](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-dump)
+This repo demonstrates using [.NET diagnostic tools](https://learn.microsoft.com/dotnet/core/diagnostics/)
+such as [dotnet-dump](https://learn.microsoft.com/dotnet/core/diagnostics/dotnet-dump)
 from a conditionally enabled sidecar container in pods deployed to [Kubernetes](https://kubernetes.io/).
 This approach allows us to:
 
 - Run application more securely under normal circumstances
- (read-only root file system, no additional tools insalled that increase attack surface), and
+ (read-only root file system, no additional tools installed that increase attack surface), and
 - Enable diagnostics and tools on demand when needed.
 
 This repo contains:
@@ -29,7 +29,7 @@ This repo contains:
 - Recommended: [Visual Studio Code](https://code.visualstudio.com/)
   with the Docker and Kubernetes extensions.
 
-## Running
+## Running the Demo
 
 To setup and run the demo, follow along the steps in the [setup.sh](./setup.sh) script.
 This will walk through:

@@ -55,7 +55,7 @@ kubectl get pods
 
 
 ##############################################################
-## Cleanup
+## Cleanup Options
 ##
 
 # Uninstall the Helm chart
@@ -67,3 +67,7 @@ az aks stop --resource-group $resourceGroup --name $aksName
 
 # Restart the cluster
 az aks start --name $aksName --resource-group $resourceGroup
+
+# Delete the resource group and everything in it
+az group delete --name $resourceGroup
+
