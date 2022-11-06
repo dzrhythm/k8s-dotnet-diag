@@ -59,7 +59,8 @@ spec:
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
         # We need to share the /tmp mount with the diag sidecar if it's enabled.
-        # This also gives us a writable /tmp mount for scratch space.
+        # This also gives us a writable /tmp mount for scratch space and allows enabling
+        # .NET diagnostics even with the rest of the root filesystem read-only.
         volumeMounts:
         - name: temp-vol
           mountPath: /tmp
@@ -67,6 +68,7 @@ spec:
       - name: diag
         image: "{{ .Values.image.registry }}/{{ .Values.image.toolsRepository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: Always
+        # The container needs to keep running, so we'll use an infinite sleep comamand.
         command: ["sleep"]
         args: ["infinity"]
         securityContext:
