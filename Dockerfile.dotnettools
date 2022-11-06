@@ -1,0 +1,18 @@
+# Builds an image with dotnet tools installed
+#
+FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build
+
+# Install dotnet tools
+RUN dotnet tool install --tool-path /tools dotnet-counters
+RUN dotnet tool install --tool-path /tools dotnet-dump
+RUN dotnet tool install --tool-path /tools dotnet-gcdump
+RUN dotnet tool install --tool-path /tools dotnet-trace
+RUN dotnet tool install --tool-path /tools dotnet-stack
+
+# Optional: install additional Linux tools
+RUN apt-get update && apt-get install -yq --no-install-recommends curl procps
+
+# RUn as a non-root user
+# NOTE: This needs to be the same user id as the application container
+RUN adduser -u 1000 --disabled-password --gecos "" appuser
+USER 1000

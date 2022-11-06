@@ -1,0 +1,40 @@
+# Default values for dotnet-diag.
+
+replicaCount: 1
+
+# Update with your registry and image repositories
+image:
+  registry: [YOUR_ACR_NAME].azurecr.io
+  repository: dotnet-diag-demo
+  toolsRepository: dotnet-tools
+  pullPolicy: Always
+  tag: "latest"
+
+enableDiagnostics: false
+
+pod:
+  httpPort: 5000
+
+service:
+  type: LoadBalancer
+  port: 80
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+    ephemeral-storage: 1024Mi
+  requests:
+    cpu: 200m
+    memory: 128Mi
+    ephemeral-storage: 512Mi
+
+toolsResources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+    ephemeral-storage: 1024Mi
+  requests:
+    cpu: 200m
+    memory: 128Mi
+    ephemeral-storage: 512Mi
